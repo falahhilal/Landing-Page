@@ -431,92 +431,36 @@
 				});
 
 		// Events.
-			$this
-				.on('submit', function() {
-
-					$this.find('input[type=text],input[type=password],textarea')
-						.each(function(event) {
-
-							var i = $(this);
-
-							if (i.attr('name').match(/-polyfill-field$/))
-								i.attr('name', '');
-
-							if (i.val() == i.attr('placeholder')) {
-
-								i.removeClass('polyfill-placeholder');
-								i.val('');
-
-							}
-
-						});
-
+		$(document).ready(function() {
+			$('#contact-form').on('submit', function(event) {
+				event.preventDefault(); // Prevent default form submission
+		
+				const scriptURL = 'https://script.google.com/macros/s/AKfycbwhbQv064y1RaJhN7VRNm6FPM5PGWO4hSWwo7l7wQeb3tXeDDEZEie5s1LrOChQmzj91w/exec';
+				const form = document.forms['contact-form'];
+		
+				fetch(scriptURL, {
+					method: 'POST',
+					body: new FormData(form)
 				})
-				.on('reset', function(event) {
-
-					event.preventDefault();
-
-					$this.find('select')
-						.val($('option:first').val());
-
-					$this.find('input,textarea')
-						.each(function() {
-
-							var i = $(this),
-								x;
-
-							i.removeClass('polyfill-placeholder');
-
-							switch (this.type) {
-
-								case 'submit':
-								case 'reset':
-									break;
-
-								case 'password':
-									i.val(i.attr('defaultValue'));
-
-									x = i.parent().find('input[name=' + i.attr('name') + '-polyfill-field]');
-
-									if (i.val() == '') {
-										i.hide();
-										x.show();
-									}
-									else {
-										i.show();
-										x.hide();
-									}
-
-									break;
-
-								case 'checkbox':
-								case 'radio':
-									i.attr('checked', i.attr('defaultValue'));
-									break;
-
-								case 'text':
-								case 'textarea':
-									i.val(i.attr('defaultValue'));
-
-									if (i.val() == '') {
-										i.addClass('polyfill-placeholder');
-										i.val(i.attr('placeholder'));
-									}
-
-									break;
-
-								default:
-									i.val(i.attr('defaultValue'));
-									break;
-
-							}
-						});
-
+				.then(response => {
+					if (response.ok) {
+						alert("Thank you! Your form is submitted successfully.");
+						window.location.reload();
+					} else {
+						alert("Failed to submit the form. Please try again.");
+					}
+				})
+				.catch(error => {
+					console.error('Error!', error.message);
+					alert("An error occurred while submitting the form. Please try again.");
 				});
-
-		return $this;
-
-	};
+		
+				return false; // Ensure no other action occurs
+			});
+		});
+		
+		
+		
 
 	/**
 	 * Moves elements to/from the first positions of their respective parents.
@@ -584,4 +528,4 @@
 
 	};
 
-})(jQuery);
+}})(jQuery)
